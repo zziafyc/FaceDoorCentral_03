@@ -1,0 +1,13 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.facedoor.MainActivity" >
+
+   <item
+        android:id="@+id/action_settings"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:orderInCategory="100"
+        app:showAsAction="never"
+        android:title="@string/action_settings"/>
+
+</menu>

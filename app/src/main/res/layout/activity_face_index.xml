@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/black"
+              android:orientation="vertical">
+
+    <include layout="@layout/common_app_bar"/>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="700dp"
+        android:background="@mipmap/face"
+        android:visibility="visible"/>
+    <!--滑动解锁模块-->
+    <RelativeLayout
+        android:id="@+id/afi_click_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="40dp"
+        android:layout_weight="0.16">
+
+        <com.example.facedoor.ui.SlideUnlockView
+            xmlns:test="http://schemas.android.com/apk/res/com.example.facedoor"
+            android:id="@+id/slideUnlockView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="gone"
+            test:slideUnlockBackgroundResource="@drawable/jiesuo_bg3"
+            test:slideUnlockBlockResource="@drawable/jiesuo_button3"/>
+
+        <ImageView
+            android:id="@+id/afi_click_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="@mipmap/face2"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="点击进入人脸识别"
+            android:textColor="@color/white"
+            android:textSize="28sp"/>
+    </RelativeLayout>
+
+</LinearLayout>
