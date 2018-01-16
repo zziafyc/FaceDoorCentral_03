@@ -24,6 +24,7 @@ public class MyApp extends Application {
     private static MyApp instance;
     public static DBManage db;
     Intent serviceIntent;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -41,7 +42,7 @@ public class MyApp extends Application {
         return instance;
     }
 
-    public  static DBManage getDBManage(Context context) {
+    public static DBManage getDBManage(Context context) {
         if (db == null) {
             db = new DBManage(context);
         }

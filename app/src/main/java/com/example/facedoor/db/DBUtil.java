@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 
 import com.example.facedoor.MyApp;
+import com.example.facedoor.model.Group;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,6 +17,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 
 public class DBUtil {
     static {
@@ -448,6 +450,29 @@ public class DBUtil {
             close(query, con);
         }
         return result;
+    }
+
+    //fyc查询所有组
+    public List<Group> queryAllGroups() {
+        List<Group> groups = new ArrayList<>();
+        Connection con = getConnection();
+        if (con == null) {
+            return null;
+        }
+        Statement query = null;
+        String queryStr = "SELECT * FROM groups";
+        try {
+            query = con.createStatement();
+            ResultSet rs = query.executeQuery(queryStr);
+            while (rs.next()) {
+                groups.add(new Group(rs.getString("id"), rs.getString("name")));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            close(query, con);
+        }
+        return groups;
     }
 
     private static void close(Statement state, Connection con) {

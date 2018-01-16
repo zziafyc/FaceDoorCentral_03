@@ -383,6 +383,13 @@ public class IdentifyActivity extends Activity {
     }
 
     private void faceVocalSuceess() {
+        InitVerifier();
+        mVerifier.startListening(mVerifyListener);
+
+
+    }
+
+    private void InitVerifier() {
         // 清空参数
         mVerifier.setParameter(SpeechConstant.PARAMS, null);
         mVerifier.setParameter(SpeechConstant.ISV_AUDIO_PATH,
@@ -398,9 +405,6 @@ public class IdentifyActivity extends Activity {
         mVerifier.setParameter(SpeechConstant.AUTH_ID, authId);
         mVerifier.setParameter(SpeechConstant.ISV_PWDT, "" + mPwdType);
         // 开始验证
-        mVerifier.startListening(mVerifyListener);
-
-
     }
 
     private VerifierListener mVerifyListener = new VerifierListener() {

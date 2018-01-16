@@ -103,6 +103,10 @@
             android:name=".VideoDetectActivity"
             android:exported="true"
             android:screenOrientation="sensorPortrait"/>
+        <activity
+            android:name=".ChooseGroupActivity"
+            android:exported="true"
+            android:screenOrientation="sensorPortrait"/>
 
         <!--  <service android:name=".DDSService"/>-->
 

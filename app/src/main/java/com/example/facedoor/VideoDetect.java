@@ -382,7 +382,7 @@ public class VideoDetect extends BaseAppCompatActivity implements DialogInterfac
                     if (faces.length > 0) {
                         lastTime = System.currentTimeMillis();
                         detectTimes++;
-                        if (detectTimes == 5) {
+                        if (detectTimes == 15) {
                             mFaceCount++;
                             detectTimes = 0;
                             mStopTrack = true;

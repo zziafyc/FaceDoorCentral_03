@@ -17,16 +17,15 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
-import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.baidu.apis.ApiClient;
@@ -34,6 +33,7 @@ import com.example.baidu.apis.CompletedListener;
 import com.example.baidu.base.ErrorResult;
 import com.example.facedoor.base.BaseAppCompatActivity;
 import com.example.facedoor.db.DBUtil;
+import com.example.facedoor.model.Group;
 import com.example.facedoor.model.User;
 import com.example.facedoor.util.ProgressShow;
 import com.example.facedoor.util.ToastShow;
@@ -56,9 +56,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import rx.Observable;
 import rx.Observable.OnSubscribe;
@@ -71,6 +73,7 @@ import rx.schedulers.Schedulers;
 public class RegisterActivity extends BaseAppCompatActivity implements OnClickListener {
 
     private final static String TAG = RegisterActivity.class.getSimpleName();
+    private static final int REQUEST_GROUP_CHOOSE = 88;
     // 选择图片后返回
     public static final int REQUEST_PICK_PICTURE = 1;
     // 拍照后返回
@@ -108,6 +111,8 @@ public class RegisterActivity extends BaseAppCompatActivity implements OnClickLi
     private final static int QUIT_GROUP = 1002;
     private String registerMessage = "";
     private String deleteMessage = "";
+    private List<Group> choosedGroups = new ArrayList<>();
+    private TextView chooseTv;
     //执行声纹识别的模型删除
     private final static int DELETE = 1000;
     private Handler deleteHandler = new Handler() {
@@ -137,6 +142,8 @@ public class RegisterActivity extends BaseAppCompatActivity implements OnClickLi
         btnDelete.setOnClickListener(this);
         findViewById(R.id.online_pick).setOnClickListener(this);
         findViewById(R.id.online_camera).setOnClickListener(this);
+        chooseTv = (TextView) findViewById(R.id.groupChoose);
+        chooseTv.setOnClickListener(this);
 
         SharedPreferences config = getSharedPreferences(MyApp.CONFIG, MODE_PRIVATE);
         String dbIP = config.getString(MyApp.DBIP_KEY, "");
@@ -198,14 +205,14 @@ public class RegisterActivity extends BaseAppCompatActivity implements OnClickLi
                 .subscribe(new Action1<ArrayList<String>>() {
                     @Override
                     public void call(ArrayList<String> name) {
-                        int length = name.size();
+                      /*  int length = name.size();
                         for (int i = 0; i < length; i++) {
                             CheckBox checkBox = new CheckBox(RegisterActivity.this);
                             checkBox.setBackgroundColor(ContextCompat.getColor(RegisterActivity.this, R.color.white));
                             checkBox.setTextColor(ContextCompat.getColor(RegisterActivity.this, R.color.black));
                             checkBox.setText(name.get(i));
                             mGroups.addView(checkBox);
-                        }
+                        }*/
                     }
                 });
     }
@@ -234,6 +241,13 @@ public class RegisterActivity extends BaseAppCompatActivity implements OnClickLi
     @Override
     public void onClick(View arg0) {
         switch (arg0.getId()) {
+            case R.id.groupChoose:
+                Intent intentChoose = new Intent(this, ChooseGroupActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("choosedGroups", (Serializable) choosedGroups);
+                intentChoose.putExtras(bundle);
+                startActivityForResult(intentChoose, REQUEST_GROUP_CHOOSE);
+                break;
             case R.id.online_pick:
                 Intent intent = new Intent();
                 intent.setType("image/*");
@@ -273,13 +287,13 @@ public class RegisterActivity extends BaseAppCompatActivity implements OnClickLi
             ToastShow.showTip(mToast, "用户名不能为空");
             return;
         }
-        for (int i = 0; i < mGroups.getChildCount(); i++) {
+       /* for (int i = 0; i < mGroups.getChildCount(); i++) {
             CheckBox child = (CheckBox) mGroups.getChildAt(i);
             if (child != null && child.isChecked()) {
                 String groupName = child.getText().toString();
                 mGroupJoined.add(mName2ID.get(groupName));
             }
-        }
+        }*/
         if (mGroupJoined.size() == 0) {
             ToastShow.showTip(mToast, "请勾选组");
             return;
@@ -371,9 +385,6 @@ public class RegisterActivity extends BaseAppCompatActivity implements OnClickLi
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // TODO Auto-generated method stub
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode != RESULT_OK) {
-            return;
-        }
         String fileSrc = null;
         if (requestCode == REQUEST_PICK_PICTURE) {
             if ("file".equals(data.getData().getScheme())) {
@@ -459,6 +470,18 @@ public class RegisterActivity extends BaseAppCompatActivity implements OnClickLi
 
             ((ImageView) findViewById(R.id.online_img)).setImageBitmap(mImageBitmap);
 
+        } else if (requestCode == REQUEST_GROUP_CHOOSE) {
+            if (data != null) {
+                choosedGroups = (List<Group>) data.getSerializableExtra("choosedGroups");
+                if (choosedGroups != null) {
+                    chooseTv.setText("已选择" + choosedGroups.size() + "个组,点击重选？");
+                    if (choosedGroups.size() > 0) {
+                        for (Group group : choosedGroups) {
+                            mGroupJoined.add(group.getId());
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -897,4 +920,6 @@ public class RegisterActivity extends BaseAppCompatActivity implements OnClickLi
         Bitmap flip = Bitmap.createBitmap(bmp, 0, 0, width, height, matrix, true);
         return flip;
     }
+
+
 }
